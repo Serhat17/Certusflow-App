@@ -1,0 +1,157 @@
+{
+  "common": {
+    "appName": "CertusFlow",
+    "tagline": "Smart Business Automation",
+    "loading": "Lädt...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "close": "Schließen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Zurück",
+    "search": "Suchen",
+    "filter": "Filtern",
+    "export": "Exportieren",
+    "import": "Importieren",
+    "download": "Herunterladen",
+    "upload": "Hochladen",
+    "yes": "Ja",
+    "no": "Nein",
+    "confirm": "Bestätigen",
+    "error": "Fehler",
+    "success": "Erfolg",
+    "warning": "Warnung",
+    "info": "Information"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "automations": "Automatisierungen",
+    "documents": "Dokumente",
+    "integrations": "Integrationen",
+    "settings": "Einstellungen",
+    "help": "Hilfe",
+    "logout": "Abmelden"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Willkommen zurück, {name}",
+    "automationsRun": "{count} Automatisierungen ausgeführt",
+    "stats": {
+      "totalRuns": "Gesamt-Ausführungen",
+      "activeAutomations": "Aktive Automatisierungen",
+      "documentsProcessed": "Verarbeitete Dokumente",
+      "timeSaved": "Eingesparte Zeit"
+    }
+  },
+  "automations": {
+    "title": "Automatisierungen",
+    "createNew": "Neue Automatisierung",
+    "noAutomations": "Noch keine Automatisierungen",
+    "noAutomationsDescription": "Erstellen Sie Ihre erste Automatisierung, um Ihre Geschäftsprozesse zu automatisieren.",
+    "list": {
+      "name": "Name",
+      "status": "Status",
+      "lastRun": "Letzte Ausführung",
+      "runs": "Ausführungen",
+      "actions": "Aktionen"
+    },
+    "status": {
+      "active": "Aktiv",
+      "paused": "Pausiert",
+      "error": "Fehler",
+      "draft": "Entwurf"
+    }
+  },
+  "documents": {
+    "title": "Dokumente",
+    "upload": "Dokument hochladen",
+    "noDocuments": "Keine Dokumente",
+    "noDocumentsDescription": "Laden Sie Ihr erstes Dokument hoch oder verbinden Sie eine E-Mail-Integration.",
+    "types": {
+      "invoice": "Rechnung",
+      "receipt": "Beleg",
+      "contract": "Vertrag",
+      "other": "Sonstiges"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Anmelden",
+      "subtitle": "Melden Sie sich bei Ihrem Konto an",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "rememberMe": "Angemeldet bleiben",
+      "forgotPassword": "Passwort vergessen?",
+      "submitButton": "Anmelden",
+      "noAccount": "Noch kein Konto?",
+      "signUp": "Registrieren"
+    },
+    "signup": {
+      "title": "Registrieren",
+      "subtitle": "Erstellen Sie Ihr kostenloses Konto",
+      "name": "Vollständiger Name",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "agreeToTerms": "Ich akzeptiere die {terms} und {privacy}",
+      "terms": "Nutzungsbedingungen",
+      "privacy": "Datenschutzerklärung",
+      "submitButton": "Konto erstellen",
+      "hasAccount": "Bereits ein Konto?",
+      "login": "Anmelden"
+    }
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "profile": {
+      "title": "Profil",
+      "description": "Verwalten Sie Ihre persönlichen Informationen"
+    },
+    "language": {
+      "title": "Sprache & Region",
+      "description": "Wählen Sie Ihre bevorzugte Sprache und Region",
+      "preferredLanguage": "Bevorzugte Sprache",
+      "timezone": "Zeitzone",
+      "dateFormat": "Datumsformat",
+      "currency": "Währung"
+    },
+    "privacy": {
+      "title": "Datenschutz & GDPR",
+      "description": "Verwalten Sie Ihre Datenschutzeinstellungen",
+      "exportData": "Alle Daten exportieren",
+      "deleteAccount": "Konto löschen",
+      "dataRetention": "Datenaufbewahrung"
+    }
+  },
+  "gdpr": {
+    "title": "Datenschutz & GDPR-Compliance",
+    "description": "CertusFlow ist vollständig GDPR-konform. Sie haben vollständige Kontrolle über Ihre Daten.",
+    "dataAccess": "Datenzugriff",
+    "dataAccessDescription": "Sie können jederzeit auf alle Ihre Daten zugreifen und diese einsehen.",
+    "dataExport": "Datenexport",
+    "dataExportDescription": "Exportieren Sie alle Ihre Daten in einem maschinenlesbaren Format (JSON).",
+    "dataExportButton": "Alle Daten jetzt exportieren",
+    "dataDeletion": "Datenlöschung",
+    "dataDeletionDescription": "Sie können Ihr Konto und alle zugehörigen Daten jederzeit löschen.",
+    "dataDeletionButton": "Konto und Daten löschen",
+    "confirmation": "Sind Sie sicher? Diese Aktion kann nicht rückgängig gemacht werden."
+  },
+  "errors": {
+    "generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "network": "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung.",
+    "auth": {
+      "invalidCredentials": "Ungültige E-Mail oder Passwort",
+      "emailInUse": "Diese E-Mail-Adresse wird bereits verwendet",
+      "weakPassword": "Das Passwort ist zu schwach"
+    }
+  },
+  "success": {
+    "saved": "Erfolgreich gespeichert",
+    "created": "Erfolgreich erstellt",
+    "updated": "Erfolgreich aktualisiert",
+    "deleted": "Erfolgreich gelöscht"
+  }
+}

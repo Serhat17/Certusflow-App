@@ -1,0 +1,157 @@
+{
+  "common": {
+    "appName": "CertusFlow",
+    "tagline": "Smart Business Automation",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "download": "Download",
+    "upload": "Upload",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "automations": "Automations",
+    "documents": "Documents",
+    "integrations": "Integrations",
+    "settings": "Settings",
+    "help": "Help",
+    "logout": "Logout"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {name}",
+    "automationsRun": "{count} automations run",
+    "stats": {
+      "totalRuns": "Total Runs",
+      "activeAutomations": "Active Automations",
+      "documentsProcessed": "Documents Processed",
+      "timeSaved": "Time Saved"
+    }
+  },
+  "automations": {
+    "title": "Automations",
+    "createNew": "Create Automation",
+    "noAutomations": "No automations yet",
+    "noAutomationsDescription": "Create your first automation to get started with automating your business workflows.",
+    "list": {
+      "name": "Name",
+      "status": "Status",
+      "lastRun": "Last Run",
+      "runs": "Runs",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "error": "Error",
+      "draft": "Draft"
+    }
+  },
+  "documents": {
+    "title": "Documents",
+    "upload": "Upload Document",
+    "noDocuments": "No documents",
+    "noDocumentsDescription": "Upload your first document or connect an email integration.",
+    "types": {
+      "invoice": "Invoice",
+      "receipt": "Receipt",
+      "contract": "Contract",
+      "other": "Other"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Sign In",
+      "subtitle": "Sign in to your account",
+      "email": "Email Address",
+      "password": "Password",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "submitButton": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign Up"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "subtitle": "Create your free account",
+      "name": "Full Name",
+      "email": "Email Address",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "agreeToTerms": "I agree to the {terms} and {privacy}",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "submitButton": "Create Account",
+      "hasAccount": "Already have an account?",
+      "login": "Sign In"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": {
+      "title": "Profile",
+      "description": "Manage your personal information"
+    },
+    "language": {
+      "title": "Language & Region",
+      "description": "Choose your preferred language and region",
+      "preferredLanguage": "Preferred Language",
+      "timezone": "Timezone",
+      "dateFormat": "Date Format",
+      "currency": "Currency"
+    },
+    "privacy": {
+      "title": "Privacy & GDPR",
+      "description": "Manage your privacy settings",
+      "exportData": "Export All Data",
+      "deleteAccount": "Delete Account",
+      "dataRetention": "Data Retention"
+    }
+  },
+  "gdpr": {
+    "title": "Privacy & GDPR Compliance",
+    "description": "CertusFlow is fully GDPR compliant. You have complete control over your data.",
+    "dataAccess": "Data Access",
+    "dataAccessDescription": "You can access and view all your data at any time.",
+    "dataExport": "Data Export",
+    "dataExportDescription": "Export all your data in a machine-readable format (JSON).",
+    "dataExportButton": "Export All Data Now",
+    "dataDeletion": "Data Deletion",
+    "dataDeletionDescription": "You can delete your account and all associated data at any time.",
+    "dataDeletionButton": "Delete Account and Data",
+    "confirmation": "Are you sure? This action cannot be undone."
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "network": "Network error. Please check your internet connection.",
+    "auth": {
+      "invalidCredentials": "Invalid email or password",
+      "emailInUse": "This email address is already in use",
+      "weakPassword": "The password is too weak"
+    }
+  },
+  "success": {
+    "saved": "Successfully saved",
+    "created": "Successfully created",
+    "updated": "Successfully updated",
+    "deleted": "Successfully deleted"
+  }
+}
