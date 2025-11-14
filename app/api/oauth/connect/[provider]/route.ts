@@ -13,10 +13,12 @@ export async function GET(
     // Get current user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     
+    console.log('OAuth Connect - User:', user?.id, 'Error:', userError);
+    
     if (userError || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+      console.error('No authenticated user found');
+      return NextResponse.redirect(
+        `${process.env.NEXT_PUBLIC_APP_URL}/de/login?error=unauthorized&returnTo=/dashboard/integrations`
       );
     }
 

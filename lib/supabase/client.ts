@@ -11,25 +11,39 @@ export function createClient() {
   return createSupabaseClient(supabaseUrl, supabaseAnonKey);
 }
 
-// Server-side client with cookies
+// Server-side client for API routes - reads all Supabase cookies
 export async function createServerClient() {
   const cookieStore = await cookies();
+  const allCookies = cookieStore.getAll();
   
-  return createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+  // Find the Supabase auth token cookie
+  const authCookie = allCookies.find(cookie => 
+    cookie.name.startsWith('sb-') && cookie.name.includes('-auth-token')
+  );
+  
+  const client = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
     auth: {
-      storage: {
-        getItem: async (key: string) => {
-          return cookieStore.get(key)?.value;
-        },
-        setItem: async (key: string, value: string) => {
-          cookieStore.set(key, value);
-        },
-        removeItem: async (key: string) => {
-          cookieStore.delete(key);
-        },
-      },
+      persistSession: false,
+      detectSessionInUrl: false,
     },
   });
+
+  // If we have an auth cookie, parse and set the session
+  if (authCookie?.value) {
+    try {
+      const sessionData = JSON.parse(decodeURIComponent(authCookie.value));
+      if (sessionData.access_token && sessionData.refresh_token) {
+        await client.auth.setSession({
+          access_token: sessionData.access_token,
+          refresh_token: sessionData.refresh_token,
+        });
+      }
+    } catch (e) {
+      console.error('Failed to parse auth cookie:', e);
+    }
+  }
+  
+  return client;
 }
 
 // Database Types
