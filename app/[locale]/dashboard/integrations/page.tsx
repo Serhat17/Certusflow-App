@@ -100,8 +100,31 @@ export default function IntegrationsPage() {
 
   async function handleConnect(provider: string) {
     setConnectingProvider(provider);
-    // Redirect to OAuth flow
-    window.location.href = `/api/oauth/connect/${provider}`;
+    
+    try {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setNotification({
+          type: 'error',
+          message: 'Bitte melden Sie sich zuerst an'
+        });
+        setConnectingProvider(null);
+        return;
+      }
+      
+      // Pass the session token as a query parameter
+      const connectUrl = `/api/oauth/connect/${provider}?access_token=${session.access_token}`;
+      window.location.href = connectUrl;
+    } catch (error) {
+      console.error('Failed to initiate OAuth:', error);
+      setNotification({
+        type: 'error',
+        message: 'Fehler beim Starten der Verbindung'
+      });
+      setConnectingProvider(null);
+    }
   }
 
   async function handleDisconnect(integrationId: string) {
