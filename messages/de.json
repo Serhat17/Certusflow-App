@@ -101,7 +101,10 @@
       "privacy": "Datenschutzerklärung",
       "submitButton": "Konto erstellen",
       "hasAccount": "Bereits ein Konto?",
-      "login": "Anmelden"
+      "login": "Anmelden",
+      "confirmEmailTitle": "Bestätigen Sie Ihre E-Mail-Adresse",
+      "confirmEmailMessage": "Wir haben Ihnen eine Bestätigungs-E-Mail gesendet. Bitte klicken Sie auf den Link in der E-Mail, um Ihr Konto zu aktivieren.",
+      "backToLogin": "Zurück zur Anmeldung"
     }
   },
   "settings": {
@@ -119,7 +122,7 @@
       "currency": "Währung"
     },
     "privacy": {
-      "title": "Datenschutz & GDPR",
+      "title": "Datenschutz & DSGVO",
       "description": "Verwalten Sie Ihre Datenschutzeinstellungen",
       "exportData": "Alle Daten exportieren",
       "deleteAccount": "Konto löschen",
@@ -127,8 +130,8 @@
     }
   },
   "gdpr": {
-    "title": "Datenschutz & GDPR-Compliance",
-    "description": "CertusFlow ist vollständig GDPR-konform. Sie haben vollständige Kontrolle über Ihre Daten.",
+    "title": "Datenschutz & DSGVO-Compliance",
+    "description": "CertusFlow ist vollständig DSGVO-konform. Sie haben vollständige Kontrolle über Ihre Daten.",
     "dataAccess": "Datenzugriff",
     "dataAccessDescription": "Sie können jederzeit auf alle Ihre Daten zugreifen und diese einsehen.",
     "dataExport": "Datenexport",

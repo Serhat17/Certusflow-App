@@ -52,10 +52,12 @@ export default function SignupPage({params}: {params: Promise<{locale: string}>}
     }
 
     try {
+      const {locale} = await params;
       const {data, error: signUpError} = await supabase.auth.signUp({
         email,
         password,
         options: {
+          emailRedirectTo: `${window.location.origin}/${locale}/dashboard`,
           data: {
             full_name: fullName,
             preferred_language: 'de',
@@ -66,11 +68,26 @@ export default function SignupPage({params}: {params: Promise<{locale: string}>}
       if (signUpError) throw signUpError;
 
       if (data.user) {
+        // Create profile in profiles table
+        const {error: profileError} = await supabase
+          .from('profiles')
+          .insert({
+            id: data.user.id,
+            email: email,
+            full_name: fullName,
+            preferred_language: 'de',
+            preferred_currency: 'EUR',
+            preferred_timezone: 'Europe/Berlin',
+            preferred_date_format: 'DD.MM.YYYY'
+          });
+
+        if (profileError) {
+          console.error('Profile creation error:', profileError);
+          // Don't fail signup if profile creation fails
+        }
+
         setSuccess(true);
-        setTimeout(async () => {
-          const {locale} = await params;
-          router.push(`/${locale}/dashboard`);
-        }, 2000);
+        // Don't redirect - wait for email confirmation
       }
     } catch (err: any) {
       if (err.message.includes('already registered')) {
@@ -92,12 +109,25 @@ export default function SignupPage({params}: {params: Promise<{locale: string}>}
               <div className="h-12 w-12 bg-success/10 rounded-full flex items-center justify-center">
                 <Check className="h-6 w-6 text-success" />
               </div>
-              <div>
-                <h3 className="text-lg font-semibold mb-2">Konto erfolgreich erstellt!</h3>
+              <div className="space-y-2">
+                <h3 className="text-lg font-semibold">{t('confirmEmailTitle')}</h3>
                 <p className="text-sm text-muted-foreground">
-                  Sie werden zum Dashboard weitergeleitet...
+                  {t('confirmEmailMessage')}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <strong>{email}</strong>
                 </p>
               </div>
+              <Button 
+                variant="outline" 
+                onClick={async () => {
+                  const {locale} = await params;
+                  router.push(`/${locale}/login`);
+                }}
+                className="mt-4"
+              >
+                {t('backToLogin')}
+              </Button>
             </div>
           </CardContent>
         </Card>

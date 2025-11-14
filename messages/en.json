@@ -96,12 +96,15 @@
       "email": "Email Address",
       "password": "Password",
       "confirmPassword": "Confirm Password",
-      "agreeToTerms": "I agree to the {terms} and {privacy}",
+      "agreeToTerms": "I accept the {terms} and {privacy}",
       "terms": "Terms of Service",
       "privacy": "Privacy Policy",
       "submitButton": "Create Account",
       "hasAccount": "Already have an account?",
-      "login": "Sign In"
+      "login": "Sign In",
+      "confirmEmailTitle": "Confirm Your Email Address",
+      "confirmEmailMessage": "We've sent you a confirmation email. Please click the link in the email to activate your account.",
+      "backToLogin": "Back to Login"
     }
   },
   "settings": {

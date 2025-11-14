@@ -3,6 +3,8 @@
  * Handles OAuth flows for Gmail, Outlook, Slack, and other integrations
  */
 
+import { getSelectedScopes } from './permissions';
+
 export type IntegrationType = 
   | 'gmail' 
   | 'outlook' 
@@ -15,14 +17,16 @@ export type IntegrationType =
 
 export interface OAuthConfig {
   clientId: string;
+  clientSecret?: string;
   redirectUri: string;
   scope: string[];
   authUrl: string;
   tokenUrl: string;
+  icon?: string;
 }
 
 // OAuth configurations for each integration
-const OAUTH_CONFIGS: Record<IntegrationType, OAuthConfig> = {
+export const OAUTH_CONFIGS: Record<IntegrationType, OAuthConfig> = {
   'gmail': {
     clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '',
     redirectUri: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/oauth/callback/gmail`,
@@ -88,15 +92,16 @@ const OAUTH_CONFIGS: Record<IntegrationType, OAuthConfig> = {
     authUrl: 'https://slack.com/oauth/v2/authorize',
     tokenUrl: 'https://slack.com/api/oauth.v2.access'
   },
-  'dropbox': {
-    clientId: process.env.NEXT_PUBLIC_DROPBOX_CLIENT_ID || '',
-    redirectUri: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/oauth/callback/dropbox`,
-    scope: [
-      'files.content.write',
-      'files.content.read'
-    ],
+  dropbox: {
     authUrl: 'https://www.dropbox.com/oauth2/authorize',
-    tokenUrl: 'https://api.dropboxapi.com/oauth2/token'
+    tokenUrl: 'https://api.dropboxapi.com/oauth2/token',
+    scope: ['files.content.write', 'files.content.read'],
+    clientId: process.env.NEXT_PUBLIC_DROPBOX_CLIENT_ID!,
+    clientSecret: process.env.DROPBOX_CLIENT_SECRET!,
+    redirectUri: process.env.NEXT_PUBLIC_APP_URL 
+      ? `${process.env.NEXT_PUBLIC_APP_URL}/api/oauth/callback/dropbox`
+      : 'https://cautious-waddle-wj6rpvv76jw39x5q-3000.app.github.dev/api/oauth/callback/dropbox',
+    icon: '/icons/dropbox.svg',
   },
   'onedrive': {
     clientId: process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID || '',
@@ -111,24 +116,40 @@ const OAUTH_CONFIGS: Record<IntegrationType, OAuthConfig> = {
 };
 
 /**
- * Generate OAuth authorization URL
+ * Generate OAuth authorization URL with custom permissions
  */
-export function getOAuthUrl(integrationType: IntegrationType, userId: string): string {
+export function getOAuthUrl(
+  integrationType: IntegrationType, 
+  userId: string,
+  selectedPermissions?: string[]
+): string {
   const config = OAUTH_CONFIGS[integrationType];
   
   if (!config.clientId) {
     throw new Error(`OAuth client ID not configured for ${integrationType}`);
   }
 
+  // Use custom permissions if provided, otherwise use default scopes
+  const scopes = selectedPermissions 
+    ? getSelectedScopes(integrationType, selectedPermissions)
+    : config.scope;
+
   const params = new URLSearchParams({
     client_id: config.clientId,
     redirect_uri: config.redirectUri,
     response_type: 'code',
-    scope: config.scope.join(' '),
-    state: JSON.stringify({ userId, integrationType }),
-    access_type: 'offline',
-    prompt: 'consent'
+    scope: scopes.join(' '),
+    state: JSON.stringify({ userId, integrationType, selectedPermissions }),
   });
+
+  // Dropbox requires token_access_type for refresh tokens
+  if (integrationType === 'dropbox') {
+    params.append('token_access_type', 'offline');
+  } else {
+    // Google, Microsoft, etc. use these parameters
+    params.append('access_type', 'offline');
+    params.append('prompt', 'consent');
+  }
 
   return `${config.authUrl}?${params.toString()}`;
 }
@@ -147,10 +168,14 @@ export async function exchangeCodeForToken(
 }> {
   const config = OAUTH_CONFIGS[integrationType];
 
+  // Get client secret from config or environment
+  const clientSecret = config.clientSecret || 
+    process.env[`${integrationType.toUpperCase().replace(/-/g, '_')}_CLIENT_SECRET`] || '';
+
   const body: Record<string, string> = {
     code,
     client_id: config.clientId,
-    client_secret: process.env[`${integrationType.toUpperCase().replace(/-/g, '_')}_CLIENT_SECRET`] || '',
+    client_secret: clientSecret,
     redirect_uri: config.redirectUri,
     grant_type: 'authorization_code'
   };
@@ -164,7 +189,9 @@ export async function exchangeCodeForToken(
   });
 
   if (!response.ok) {
-    throw new Error(`Token exchange failed: ${response.statusText}`);
+    const errorText = await response.text();
+    console.error(`Token exchange failed for ${integrationType}:`, errorText);
+    throw new Error(`Token exchange failed: ${response.statusText} - ${errorText}`);
   }
 
   return response.json();

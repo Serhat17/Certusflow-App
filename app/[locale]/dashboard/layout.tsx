@@ -2,9 +2,10 @@
 
 import {useTranslations} from 'next-intl';
 import Link from 'next/link';
-import {usePathname, useParams} from 'next/navigation';
+import {usePathname, useParams, useRouter} from 'next/navigation';
 import {Home, Zap, FileText, Settings, HelpCircle, LogOut, LinkIcon} from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import {createClient} from '@/lib/supabase/client';
 
 export default function DashboardLayout({
   children
@@ -14,7 +15,14 @@ export default function DashboardLayout({
   const t = useTranslations('nav');
   const pathname = usePathname();
   const params = useParams();
+  const router = useRouter();
   const locale = params.locale as string;
+
+  async function handleLogout() {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push(`/${locale}/login`);
+  }
 
   const navigation = [
     {href: `/${locale}/dashboard`, label: t('dashboard'), icon: Home},
@@ -62,7 +70,10 @@ export default function DashboardLayout({
           <div className="px-3">
             <LanguageSwitcher />
           </div>
-          <button className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground rounded-md transition-colors"
+          >
             <LogOut className="h-4 w-4" />
             {t('logout')}
           </button>

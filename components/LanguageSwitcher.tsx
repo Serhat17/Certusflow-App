@@ -2,6 +2,7 @@
 
 import {useLocale} from 'next-intl';
 import {useRouter, usePathname} from 'next/navigation';
+import {useState, useEffect} from 'react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,11 +21,27 @@ export default function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   function switchLanguage(newLocale: string) {
     // Replace locale in URL
     const newPath = pathname.replace(`/${locale}`, `/${newLocale}`);
     router.push(newPath);
+  }
+
+  // Render a placeholder button during SSR to prevent hydration mismatch
+  if (!mounted) {
+    return (
+      <Button variant="outline" size="sm" disabled>
+        <Globe className="w-4 h-4 mr-2" />
+        {languages[locale as keyof typeof languages].flag}{' '}
+        {languages[locale as keyof typeof languages].name}
+      </Button>
+    );
   }
 
   return (

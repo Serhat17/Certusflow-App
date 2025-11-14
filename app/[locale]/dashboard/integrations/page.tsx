@@ -7,7 +7,10 @@ import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import {Input} from '@/components/ui/input';
+import {Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from '@/components/ui/dialog';
+import PermissionSelector from '@/components/PermissionSelector';
 import {createClient} from '@/lib/supabase/client';
+import {toast} from 'sonner';
 import {
   Mail,
   Database,
@@ -24,7 +27,8 @@ import {
   Link as LinkIcon,
   Loader2,
   AlertCircle,
-  ExternalLink
+  ExternalLink,
+  Shield
 } from 'lucide-react';
 
 export default function IntegrationsPage() {
@@ -37,7 +41,21 @@ export default function IntegrationsPage() {
   const [connectedIntegrations, setConnectedIntegrations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [connectingProvider, setConnectingProvider] = useState<string | null>(null);
-  const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
+  const [disconnectDialog, setDisconnectDialog] = useState<{open: boolean, integration: any | null}>({
+    open: false,
+    integration: null
+  });
+  const [permissionDialog, setPermissionDialog] = useState<{
+    open: boolean,
+    provider: string | null,
+    providerName: string,
+    existingPermissions?: string[]
+  }>({
+    open: false,
+    provider: null,
+    providerName: '',
+    existingPermissions: undefined
+  });
 
   useEffect(() => {
     loadConnectedIntegrations();
@@ -47,28 +65,16 @@ export default function IntegrationsPage() {
     const error = searchParams.get('error');
 
     if (success) {
-      setNotification({
-        type: 'success',
-        message: `${success} wurde erfolgreich verbunden!`
-      });
+      toast.success(`${success} wurde erfolgreich verbunden!`);
       loadConnectedIntegrations();
       // Clear URL params
       router.replace('/dashboard/integrations');
     }
 
     if (error) {
-      setNotification({
-        type: 'error',
-        message: `Verbindung fehlgeschlagen: ${error}`
-      });
+      toast.error(`Verbindung fehlgeschlagen: ${error}`);
       // Clear URL params
       router.replace('/dashboard/integrations');
-    }
-
-    // Auto-hide notification after 5 seconds
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 5000);
-      return () => clearTimeout(timer);
     }
   }, [searchParams]);
 
@@ -86,7 +92,7 @@ export default function IntegrationsPage() {
         .from('integrations')
         .select('*')
         .eq('user_id', user.id)
-        .eq('status', 'active');
+        .eq('is_connected', true);
 
       if (!error && data) {
         setConnectedIntegrations(data);
@@ -98,7 +104,16 @@ export default function IntegrationsPage() {
     }
   }
 
-  async function handleConnect(provider: string) {
+  function handleConnectClick(provider: string, providerName: string) {
+    setPermissionDialog({
+      open: true,
+      provider,
+      providerName,
+      existingPermissions: undefined
+    });
+  }
+
+  async function handleConnect(provider: string, selectedPermissions: string[]) {
     setConnectingProvider(provider);
     
     try {
@@ -106,52 +121,56 @@ export default function IntegrationsPage() {
       const { data: { session } } = await supabase.auth.getSession();
       
       if (!session) {
-        setNotification({
-          type: 'error',
-          message: 'Bitte melden Sie sich zuerst an'
-        });
+        toast.error('Bitte melden Sie sich zuerst an');
         setConnectingProvider(null);
         return;
       }
       
-      // Pass the session token as a query parameter
-      const connectUrl = `/api/oauth/connect/${provider}?access_token=${session.access_token}`;
+      // Pass permissions as query parameter
+      const permissionsParam = encodeURIComponent(JSON.stringify(selectedPermissions));
+      const connectUrl = `/api/oauth/connect/${provider}?access_token=${session.access_token}&permissions=${permissionsParam}`;
       window.location.href = connectUrl;
     } catch (error) {
       console.error('Failed to initiate OAuth:', error);
-      setNotification({
-        type: 'error',
-        message: 'Fehler beim Starten der Verbindung'
-      });
+      toast.error('Fehler beim Starten der Verbindung');
       setConnectingProvider(null);
     }
   }
 
-  async function handleDisconnect(integrationId: string) {
-    if (!confirm('Möchten Sie diese Integration wirklich trennen?')) {
-      return;
-    }
+  async function handleDisconnect(integration: any) {
+    setDisconnectDialog({ open: true, integration });
+  }
+
+  function handleEditPermissions(integration: any) {
+    // Parse existing permissions from integration
+    const existingPerms = integration.permissions ? JSON.parse(integration.permissions) : undefined;
+    setPermissionDialog({
+      open: true,
+      provider: integration.service_name,
+      providerName: integration.service_name,
+      existingPermissions: existingPerms
+    });
+  }
+
+  async function confirmDisconnect() {
+    if (!disconnectDialog.integration) return;
 
     try {
       const supabase = createClient();
       const { error } = await supabase
         .from('integrations')
-        .update({ status: 'disconnected' })
-        .eq('id', integrationId);
+        .update({ is_connected: false, connection_status: 'disconnected' })
+        .eq('id', disconnectDialog.integration.id);
 
       if (!error) {
-        setNotification({
-          type: 'success',
-          message: 'Integration wurde getrennt'
-        });
+        toast.success(`${disconnectDialog.integration.service_name} wurde erfolgreich getrennt`);
         loadConnectedIntegrations();
       }
+      setDisconnectDialog({ open: false, integration: null });
     } catch (error) {
       console.error('Failed to disconnect:', error);
-      setNotification({
-        type: 'error',
-        message: 'Fehler beim Trennen der Integration'
-      });
+      toast.error('Fehler beim Trennen der Integration');
+      setDisconnectDialog({ open: false, integration: null });
     }
   }
 
@@ -180,9 +199,9 @@ export default function IntegrationsPage() {
 
   const displayConnectedIntegrations = connectedIntegrations.map(integration => ({
     ...integration,
-    icon: integrationIcons[integration.provider] || LinkIcon,
-    color: integrationColors[integration.provider] || 'bg-gray-500',
-    lastSync: integration.last_sync_at
+    icon: integrationIcons[integration.service_name] || LinkIcon,
+    color: integrationColors[integration.service_name] || 'bg-gray-500',
+    lastSync: integration.last_connected_at
   }));
 
   const availableIntegrations = [
@@ -300,28 +319,6 @@ export default function IntegrationsPage() {
 
       {/* Page Content */}
       <div className="p-8">
-        {/* Notification */}
-        {notification && (
-          <div className={`mb-6 p-4 rounded-lg border flex items-center gap-3 ${
-            notification.type === 'success' 
-              ? 'bg-success/10 border-success/20 text-success' 
-              : 'bg-destructive/10 border-destructive/20 text-destructive'
-          }`}>
-            {notification.type === 'success' ? (
-              <CheckCircle2 className="h-5 w-5" />
-            ) : (
-              <AlertCircle className="h-5 w-5" />
-            )}
-            <p className="font-medium">{notification.message}</p>
-            <button 
-              onClick={() => setNotification(null)}
-              className="ml-auto hover:opacity-70"
-            >
-              ✕
-            </button>
-          </div>
-        )}
-
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card>
@@ -399,7 +396,7 @@ export default function IntegrationsPage() {
                             <Icon className="h-5 w-5 text-white" />
                           </div>
                           <div>
-                            <CardTitle className="text-base">{integration.provider}</CardTitle>
+                            <CardTitle className="text-base">{integration.service_name}</CardTitle>
                             <Badge variant="default" className="mt-1 bg-success/10 text-success border-success/20">
                               <CheckCircle2 className="h-3 w-3 mr-1" />
                               Verbunden
@@ -410,10 +407,10 @@ export default function IntegrationsPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2 text-xs text-muted-foreground">
-                        {integration.connected_account && (
+                        {integration.config_data?.email && (
                           <div className="flex items-center justify-between">
                             <span>Konto:</span>
-                            <span className="font-medium">{integration.connected_account}</span>
+                            <span className="font-medium">{integration.config_data.email}</span>
                           </div>
                         )}
                         {integration.lastSync && (
@@ -424,14 +421,19 @@ export default function IntegrationsPage() {
                         )}
                       </div>
                       <div className="flex gap-2 mt-4">
-                        <Button variant="outline" size="sm" className="flex-1">
-                          <Settings className="h-3 w-3 mr-1" />
-                          Einstellungen
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => handleEditPermissions(integration)}
+                        >
+                          <Shield className="h-3 w-3 mr-1" />
+                          Berechtigungen
                         </Button>
                         <Button 
                           variant="ghost" 
                           size="sm"
-                          onClick={() => handleDisconnect(integration.id)}
+                          onClick={() => handleDisconnect(integration)}
                         >
                           Trennen
                         </Button>
@@ -466,7 +468,7 @@ export default function IntegrationsPage() {
                 const Icon = integration.icon;
                 const isConnecting = connectingProvider === integration.id;
                 const isConnected = displayConnectedIntegrations.some(
-                  (conn: any) => conn.provider === integration.id
+                  (conn: any) => conn.service_name === integration.id
                 );
 
                 return (
@@ -495,7 +497,7 @@ export default function IntegrationsPage() {
                         <Button 
                           className="w-full" 
                           size="sm"
-                          onClick={() => handleConnect(integration.id)}
+                          onClick={() => handleConnectClick(integration.id, integration.name)}
                           disabled={isConnecting}
                         >
                           {isConnecting ? (
@@ -505,7 +507,7 @@ export default function IntegrationsPage() {
                             </>
                           ) : (
                             <>
-                              <Plus className="h-3 w-3 mr-1" />
+                              <Shield className="h-3 w-3 mr-1" />
                               Verbinden
                             </>
                           )}
@@ -532,6 +534,49 @@ export default function IntegrationsPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Disconnect Confirmation Dialog */}
+        <Dialog open={disconnectDialog.open} onOpenChange={(open) => setDisconnectDialog({ open, integration: null })}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Integration trennen?</DialogTitle>
+              <DialogDescription>
+                Möchten Sie die Verbindung zu <strong>{disconnectDialog.integration?.service_name}</strong> wirklich trennen?
+                {disconnectDialog.integration?.config_data?.email && (
+                  <span className="block mt-2 text-sm">
+                    Verbundenes Konto: {disconnectDialog.integration.config_data.email}
+                  </span>
+                )}
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setDisconnectDialog({ open: false, integration: null })}
+              >
+                Abbrechen
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={confirmDisconnect}
+              >
+                Trennen
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Permission Selector Dialog */}
+        {permissionDialog.provider && (
+          <PermissionSelector
+            integrationType={permissionDialog.provider}
+            integrationName={permissionDialog.providerName}
+            open={permissionDialog.open}
+            onOpenChange={(open) => setPermissionDialog({ ...permissionDialog, open })}
+            onConfirm={(selectedPermissions) => handleConnect(permissionDialog.provider!, selectedPermissions)}
+            existingPermissions={permissionDialog.existingPermissions}
+          />
+        )}
       </div>
     </div>
   );
