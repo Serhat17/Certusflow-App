@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/client';
+import { createServerClient } from '@/lib/supabase/client';
 import { exchangeCodeForToken, testIntegrationConnection } from '@/lib/integrations/oauth';
 
 export async function GET(
@@ -27,7 +27,7 @@ export async function GET(
     }
 
     const state = JSON.parse(stateStr);
-    const supabase = createClient();
+    const supabase = await createServerClient();
 
     // Verify user
     const { data: { user }, error: userError } = await supabase.auth.getUser();
