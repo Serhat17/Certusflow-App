@@ -1,11 +1,13 @@
 'use client';
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {useTranslations} from 'next-intl';
+import {useSearchParams, useRouter} from 'next/navigation';
 import {Button} from '@/components/ui/button';
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card';
 import {Badge} from '@/components/ui/badge';
 import {Input} from '@/components/ui/input';
+import {createClient} from '@/lib/supabase/client';
 import {
   Mail,
   Database,
@@ -19,52 +21,159 @@ import {
   Plus,
   Settings,
   CheckCircle2,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Loader2,
+  AlertCircle,
+  ExternalLink
 } from 'lucide-react';
 
 export default function IntegrationsPage() {
   const t = useTranslations('integrations');
   const tCommon = useTranslations('common');
+  const searchParams = useSearchParams();
+  const router = useRouter();
   
   const [searchQuery, setSearchQuery] = useState('');
+  const [connectedIntegrations, setConnectedIntegrations] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [connectingProvider, setConnectingProvider] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{type: 'success' | 'error', message: string} | null>(null);
 
-  // Mock data
-  const connectedIntegrations = [
-    {
-      id: '1',
-      name: 'Gmail',
-      description: 'E-Mail-Integration für automatische Verarbeitung',
-      icon: Mail,
-      status: 'connected',
-      color: 'bg-red-500',
-      lastSync: '2024-01-15T10:30:00Z',
-      automations: 3
-    },
-    {
-      id: '2',
-      name: 'Google Sheets',
-      description: 'Speichern Sie extrahierte Daten in Tabellen',
-      icon: FileText,
-      status: 'connected',
-      color: 'bg-green-500',
-      lastSync: '2024-01-15T09:15:00Z',
-      automations: 5
-    },
-    {
-      id: '3',
-      name: 'Slack',
-      description: 'Benachrichtigungen und Alerts',
-      icon: MessageSquare,
-      status: 'connected',
-      color: 'bg-purple-500',
-      lastSync: '2024-01-14T18:20:00Z',
-      automations: 2
+  useEffect(() => {
+    loadConnectedIntegrations();
+
+    // Handle OAuth callback notifications
+    const success = searchParams.get('success');
+    const error = searchParams.get('error');
+
+    if (success) {
+      setNotification({
+        type: 'success',
+        message: `${success} wurde erfolgreich verbunden!`
+      });
+      loadConnectedIntegrations();
+      // Clear URL params
+      router.replace('/dashboard/integrations');
     }
-  ];
+
+    if (error) {
+      setNotification({
+        type: 'error',
+        message: `Verbindung fehlgeschlagen: ${error}`
+      });
+      // Clear URL params
+      router.replace('/dashboard/integrations');
+    }
+
+    // Auto-hide notification after 5 seconds
+    if (notification) {
+      const timer = setTimeout(() => setNotification(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [searchParams]);
+
+  async function loadConnectedIntegrations() {
+    try {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('integrations')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('status', 'active');
+
+      if (!error && data) {
+        setConnectedIntegrations(data);
+      }
+    } catch (error) {
+      console.error('Failed to load integrations:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function handleConnect(provider: string) {
+    setConnectingProvider(provider);
+    // Redirect to OAuth flow
+    window.location.href = `/api/oauth/connect/${provider}`;
+  }
+
+  async function handleDisconnect(integrationId: string) {
+    if (!confirm('Möchten Sie diese Integration wirklich trennen?')) {
+      return;
+    }
+
+    try {
+      const supabase = createClient();
+      const { error } = await supabase
+        .from('integrations')
+        .update({ status: 'disconnected' })
+        .eq('id', integrationId);
+
+      if (!error) {
+        setNotification({
+          type: 'success',
+          message: 'Integration wurde getrennt'
+        });
+        loadConnectedIntegrations();
+      }
+    } catch (error) {
+      console.error('Failed to disconnect:', error);
+      setNotification({
+        type: 'error',
+        message: 'Fehler beim Trennen der Integration'
+      });
+    }
+  }
+
+  // Map database integrations to display format
+  const integrationIcons: Record<string, any> = {
+    'gmail': Mail,
+    'outlook': Mail,
+    'slack': MessageSquare,
+    'google-sheets': FileText,
+    'google-calendar': Calendar,
+    'microsoft-teams': MessageSquare,
+    'dropbox': Cloud,
+    'onedrive': Cloud
+  };
+
+  const integrationColors: Record<string, string> = {
+    'gmail': 'bg-red-500',
+    'outlook': 'bg-blue-500',
+    'slack': 'bg-purple-500',
+    'google-sheets': 'bg-green-500',
+    'google-calendar': 'bg-blue-600',
+    'microsoft-teams': 'bg-indigo-500',
+    'dropbox': 'bg-blue-400',
+    'onedrive': 'bg-blue-500'
+  };
+
+  const displayConnectedIntegrations = connectedIntegrations.map(integration => ({
+    ...integration,
+    icon: integrationIcons[integration.provider] || LinkIcon,
+    color: integrationColors[integration.provider] || 'bg-gray-500',
+    lastSync: integration.last_sync_at
+  }));
 
   const availableIntegrations = [
     {
-      id: '4',
+      id: 'gmail',
+      name: 'Gmail',
+      description: 'E-Mail-Integration für automatische Verarbeitung',
+      icon: Mail,
+      category: 'E-Mail',
+      color: 'bg-red-500',
+      popular: true
+    },
+    {
+      id: 'outlook',
       name: 'Microsoft Outlook',
       description: 'E-Mail-Integration für Office 365',
       icon: Mail,
@@ -73,7 +182,25 @@ export default function IntegrationsPage() {
       popular: true
     },
     {
-      id: '5',
+      id: 'slack',
+      name: 'Slack',
+      description: 'Team-Kommunikation und Benachrichtigungen',
+      icon: MessageSquare,
+      category: 'Kommunikation',
+      color: 'bg-purple-500',
+      popular: true
+    },
+    {
+      id: 'google-sheets',
+      name: 'Google Sheets',
+      description: 'Speichern Sie extrahierte Daten in Tabellen',
+      icon: FileText,
+      category: 'Produktivität',
+      color: 'bg-green-500',
+      popular: true
+    },
+    {
+      id: 'dropbox',
       name: 'Dropbox',
       description: 'Cloud-Speicher für Dokumente',
       icon: Cloud,
@@ -82,7 +209,7 @@ export default function IntegrationsPage() {
       popular: false
     },
     {
-      id: '6',
+      id: 'microsoft-teams',
       name: 'Microsoft Teams',
       description: 'Team-Kommunikation und Benachrichtigungen',
       icon: MessageSquare,
@@ -91,7 +218,7 @@ export default function IntegrationsPage() {
       popular: true
     },
     {
-      id: '7',
+      id: 'google-calendar',
       name: 'Google Calendar',
       description: 'Termine und Erinnerungen automatisieren',
       icon: Calendar,
@@ -100,34 +227,7 @@ export default function IntegrationsPage() {
       popular: false
     },
     {
-      id: '8',
-      name: 'Shopify',
-      description: 'E-Commerce Integration',
-      icon: ShoppingCart,
-      category: 'E-Commerce',
-      color: 'bg-green-600',
-      popular: true
-    },
-    {
-      id: '9',
-      name: 'Stripe',
-      description: 'Zahlungsverarbeitung',
-      icon: DollarSign,
-      category: 'Finanzen',
-      color: 'bg-purple-600',
-      popular: false
-    },
-    {
-      id: '10',
-      name: 'PostgreSQL',
-      description: 'Datenbank-Integration',
-      icon: Database,
-      category: 'Datenbank',
-      color: 'bg-blue-700',
-      popular: false
-    },
-    {
-      id: '11',
+      id: 'onedrive',
       name: 'OneDrive',
       description: 'Cloud-Speicher von Microsoft',
       icon: Cloud,
@@ -177,6 +277,28 @@ export default function IntegrationsPage() {
 
       {/* Page Content */}
       <div className="p-8">
+        {/* Notification */}
+        {notification && (
+          <div className={`mb-6 p-4 rounded-lg border flex items-center gap-3 ${
+            notification.type === 'success' 
+              ? 'bg-success/10 border-success/20 text-success' 
+              : 'bg-destructive/10 border-destructive/20 text-destructive'
+          }`}>
+            {notification.type === 'success' ? (
+              <CheckCircle2 className="h-5 w-5" />
+            ) : (
+              <AlertCircle className="h-5 w-5" />
+            )}
+            <p className="font-medium">{notification.message}</p>
+            <button 
+              onClick={() => setNotification(null)}
+              className="ml-auto hover:opacity-70"
+            >
+              ✕
+            </button>
+          </div>
+        )}
+
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card>
@@ -184,7 +306,7 @@ export default function IntegrationsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Verbundene Integrationen</p>
-                  <p className="text-2xl font-semibold mt-1">{connectedIntegrations.length}</p>
+                  <p className="text-2xl font-semibold mt-1">{displayConnectedIntegrations.length}</p>
                 </div>
                 <div className="h-12 w-12 bg-success/10 rounded-full flex items-center justify-center">
                   <CheckCircle2 className="h-6 w-6 text-success" />
@@ -213,7 +335,7 @@ export default function IntegrationsPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Aktive Automatisierungen</p>
                   <p className="text-2xl font-semibold mt-1">
-                    {connectedIntegrations.reduce((sum, int) => sum + int.automations, 0)}
+                    {displayConnectedIntegrations.reduce((sum: number, int: any) => sum + (int.automations || 0), 0)}
                   </p>
                 </div>
                 <div className="h-12 w-12 bg-info/10 rounded-full flex items-center justify-center">
@@ -227,55 +349,76 @@ export default function IntegrationsPage() {
         {/* Connected Integrations */}
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">Verbundene Integrationen</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {connectedIntegrations.map((integration) => {
-              const Icon = integration.icon;
-              return (
-                <Card key={integration.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`h-10 w-10 ${integration.color} rounded-lg flex items-center justify-center`}>
-                          <Icon className="h-5 w-5 text-white" />
+          {isLoading ? (
+            <div className="flex items-center justify-center p-12">
+              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+            </div>
+          ) : displayConnectedIntegrations.length === 0 ? (
+            <Card>
+              <CardContent className="p-12 text-center">
+                <LinkIcon className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">Noch keine Integrationen verbunden</p>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Verbinden Sie Ihre Tools unten, um zu starten
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {displayConnectedIntegrations.map((integration) => {
+                const Icon = integration.icon;
+                return (
+                  <Card key={integration.id}>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`h-10 w-10 ${integration.color} rounded-lg flex items-center justify-center`}>
+                            <Icon className="h-5 w-5 text-white" />
+                          </div>
+                          <div>
+                            <CardTitle className="text-base">{integration.provider}</CardTitle>
+                            <Badge variant="default" className="mt-1 bg-success/10 text-success border-success/20">
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              Verbunden
+                            </Badge>
+                          </div>
                         </div>
-                        <div>
-                          <CardTitle className="text-base">{integration.name}</CardTitle>
-                          <Badge variant="default" className="mt-1 bg-success/10 text-success border-success/20">
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Verbunden
-                          </Badge>
-                        </div>
                       </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {integration.description}
-                    </p>
-                    <div className="space-y-2 text-xs text-muted-foreground">
-                      <div className="flex items-center justify-between">
-                        <span>Letzter Sync:</span>
-                        <span>{formatDate(integration.lastSync)}</span>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-xs text-muted-foreground">
+                        {integration.connected_account && (
+                          <div className="flex items-center justify-between">
+                            <span>Konto:</span>
+                            <span className="font-medium">{integration.connected_account}</span>
+                          </div>
+                        )}
+                        {integration.lastSync && (
+                          <div className="flex items-center justify-between">
+                            <span>Letzter Sync:</span>
+                            <span>{formatDate(integration.lastSync)}</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center justify-between">
-                        <span>Automatisierungen:</span>
-                        <span>{integration.automations}</span>
+                      <div className="flex gap-2 mt-4">
+                        <Button variant="outline" size="sm" className="flex-1">
+                          <Settings className="h-3 w-3 mr-1" />
+                          Einstellungen
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDisconnect(integration.id)}
+                        >
+                          Trennen
+                        </Button>
                       </div>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      <Button variant="outline" size="sm" className="flex-1">
-                        <Settings className="h-3 w-3 mr-1" />
-                        Einstellungen
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        Trennen
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Available Integrations */}
@@ -298,6 +441,11 @@ export default function IntegrationsPage() {
               )
               .map((integration) => {
                 const Icon = integration.icon;
+                const isConnecting = connectingProvider === integration.id;
+                const isConnected = displayConnectedIntegrations.some(
+                  (conn: any) => conn.provider === integration.id
+                );
+
                 return (
                   <Card key={integration.id} className="hover:shadow-md transition-shadow">
                     <CardHeader>
@@ -315,10 +463,31 @@ export default function IntegrationsPage() {
                       <CardDescription className="text-xs">{integration.description}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <Button className="w-full" size="sm">
-                        <Plus className="h-3 w-3 mr-1" />
-                        Verbinden
-                      </Button>
+                      {isConnected ? (
+                        <Button className="w-full" size="sm" variant="outline" disabled>
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Verbunden
+                        </Button>
+                      ) : (
+                        <Button 
+                          className="w-full" 
+                          size="sm"
+                          onClick={() => handleConnect(integration.id)}
+                          disabled={isConnecting}
+                        >
+                          {isConnecting ? (
+                            <>
+                              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                              Verbinde...
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="h-3 w-3 mr-1" />
+                              Verbinden
+                            </>
+                          )}
+                        </Button>
+                      )}
                     </CardContent>
                   </Card>
                 );
