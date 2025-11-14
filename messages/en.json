@@ -30,6 +30,7 @@
     "dashboard": "Dashboard",
     "automations": "Automations",
     "documents": "Documents",
+    "contractScan": "Contract Analysis",
     "integrations": "Integrations",
     "settings": "Settings",
     "help": "Help",
@@ -156,5 +157,38 @@
     "created": "Successfully created",
     "updated": "Successfully updated",
     "deleted": "Successfully deleted"
+  },
+  "contractScan": {
+    "title": "Contract Analysis",
+    "subtitle": "AI-powered analysis for risks and GDPR compliance",
+    "privacy": {
+      "title": "GDPR-compliant & secure",
+      "encrypted": "End-to-end encrypted",
+      "euServers": "EU servers (Germany)",
+      "autoDeletion": "Auto-deletion after 30 days",
+      "noAiTraining": "No AI training usage",
+      "deletable": "Deletable at any time"
+    },
+    "upload": {
+      "title": "Upload contract",
+      "formats": "PDF, DOCX or TXT (max. 10 MB)",
+      "button": "Select file"
+    },
+    "consent": {
+      "processing": "I confirm that I am authorized to upload this contract. Temporary processing is consented to.",
+      "optional": "Optional:",
+      "save30Days": "Save result for 30 days"
+    },
+    "fileSelected": "File selected",
+    "removeFile": "Remove file",
+    "startAnalysis": "Start analysis",
+    "analyzing": "Analyzing...",
+    "analysisComplete": "Analysis complete",
+    "errors": {
+      "invalidFileType": "Invalid file type. Only PDF, DOCX or TXT allowed.",
+      "fileTooLarge": "File too large. Maximum 10 MB.",
+      "consentRequired": "Consent for processing required.",
+      "analysisFailed": "Analysis failed"
+    }
   }
 }

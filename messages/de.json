@@ -30,6 +30,7 @@
     "dashboard": "Dashboard",
     "automations": "Automatisierungen",
     "documents": "Dokumente",
+    "contractScan": "Vertragsanalyse",
     "integrations": "Integrationen",
     "settings": "Einstellungen",
     "help": "Hilfe",
@@ -156,5 +157,38 @@
     "created": "Erfolgreich erstellt",
     "updated": "Erfolgreich aktualisiert",
     "deleted": "Erfolgreich gelöscht"
+  },
+  "contractScan": {
+    "title": "Vertragsanalyse",
+    "subtitle": "KI-gestützte Analyse auf Risiken und DSGVO-Konformität",
+    "privacy": {
+      "title": "DSGVO-konform & sicher",
+      "encrypted": "Ende-zu-Ende verschlüsselt",
+      "euServers": "EU-Server (Deutschland)",
+      "autoDeletion": "Auto-Löschung nach 30 Tagen",
+      "noAiTraining": "Keine KI-Training Nutzung",
+      "deletable": "Jederzeit löschbar"
+    },
+    "upload": {
+      "title": "Vertrag hochladen",
+      "formats": "PDF, DOCX oder TXT (max. 10 MB)",
+      "button": "Datei auswählen"
+    },
+    "consent": {
+      "processing": "Ich bestätige, dass ich berechtigt bin, diesen Vertrag hochzuladen. Temporäre Verarbeitung wird zugestimmt.",
+      "optional": "Optional:",
+      "save30Days": "Ergebnis 30 Tage speichern"
+    },
+    "fileSelected": "Datei ausgewählt",
+    "removeFile": "Datei entfernen",
+    "startAnalysis": "Analyse starten",
+    "analyzing": "Analysiere...",
+    "analysisComplete": "Analyse abgeschlossen",
+    "errors": {
+      "invalidFileType": "Ungültiger Dateityp. Nur PDF, DOCX oder TXT erlaubt.",
+      "fileTooLarge": "Datei zu groß. Maximum 10 MB.",
+      "consentRequired": "Einwilligung zur Verarbeitung erforderlich.",
+      "analysisFailed": "Analyse fehlgeschlagen"
+    }
   }
 }

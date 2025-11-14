@@ -3,7 +3,7 @@
 import {useTranslations} from 'next-intl';
 import Link from 'next/link';
 import {usePathname, useParams, useRouter} from 'next/navigation';
-import {Home, Zap, FileText, Settings, HelpCircle, LogOut, LinkIcon} from 'lucide-react';
+import {Home, Zap, FileText, Settings, HelpCircle, LogOut, LinkIcon, FileSearch} from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import {createClient} from '@/lib/supabase/client';
 
@@ -28,6 +28,7 @@ export default function DashboardLayout({
     {href: `/${locale}/dashboard`, label: t('dashboard'), icon: Home},
     {href: `/${locale}/dashboard/automations`, label: t('automations'), icon: Zap},
     {href: `/${locale}/dashboard/documents`, label: t('documents'), icon: FileText},
+    {href: `/${locale}/dashboard/contracts/scan`, label: t('contractScan'), icon: FileSearch},
     {href: `/${locale}/dashboard/integrations`, label: t('integrations'), icon: LinkIcon},
     {href: `/${locale}/dashboard/settings`, label: t('settings'), icon: Settings},
     {href: `/${locale}/dashboard/help`, label: t('help'), icon: HelpCircle},

@@ -174,6 +174,11 @@ export default function IntegrationsPage() {
     }
   }
 
+  function handleRequestIntegration() {
+    // Open email client or external form
+    window.open('mailto:support@certusflow.com?subject=Integration%20Vorschlag&body=Ich%20möchte%20folgende%20Integration%20vorschlagen:%0A%0AName:%0ABeschreibung:%0AWarum%20diese%20Integration:%0A', '_blank');
+  }
+
   // Map database integrations to display format
   const integrationIcons: Record<string, any> = {
     'gmail': Mail,
@@ -521,19 +526,25 @@ export default function IntegrationsPage() {
         </div>
 
         {/* Request Integration */}
-        <Card className="mt-8">
-          <CardContent className="pt-6">
-            <div className="text-center">
-              <p className="font-medium mb-2">Integration fehlt?</p>
-              <p className="text-sm text-muted-foreground mb-4">
-                Schlagen Sie eine neue Integration vor und wir prüfen die Umsetzung
-              </p>
-              <Button variant="outline">
-                Integration vorschlagen
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        <div className="mt-8">
+          <Card className="border-dashed border-2 bg-muted/30">
+            <CardContent className="py-8">
+              <div className="text-center">
+                <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Plus className="h-8 w-8 text-primary" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Integration fehlt?</h3>
+                <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
+                  Schlagen Sie eine neue Integration vor und wir prüfen die Umsetzung
+                </p>
+                <Button variant="default" size="lg" onClick={handleRequestIntegration}>
+                  <ExternalLink className="h-4 w-4 mr-2" />
+                  Integration vorschlagen
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Disconnect Confirmation Dialog */}
         <Dialog open={disconnectDialog.open} onOpenChange={(open) => setDisconnectDialog({ open, integration: null })}>
