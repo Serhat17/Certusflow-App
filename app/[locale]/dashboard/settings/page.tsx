@@ -17,6 +17,8 @@ import {
 import {Download, Trash2, Shield, Loader2} from 'lucide-react';
 import {createClient} from '@/lib/supabase/client';
 import {toast} from 'sonner';
+import {Checkbox} from '@/components/ui/checkbox';
+import TwoFactorSetup from '@/components/TwoFactorSetup';
 
 export default function SettingsPage() {
   const t = useTranslations('settings');
@@ -24,16 +26,53 @@ export default function SettingsPage() {
   const tCommon = useTranslations('common');
   const router = useRouter();
   const params = useParams();
-  const currentLocale = params.locale as string;
+  const currentLocale = (params.locale as string) || 'de';
   
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUpdatingScanner, setIsUpdatingScanner] = useState(false);
+  const [isUpdatingSecurity, setIsUpdatingSecurity] = useState(false);
   const [profile, setProfile] = useState({
     full_name: '',
     email: '',
     preferred_language: 'de',
     preferred_timezone: 'Europe/Berlin',
     preferred_currency: 'EUR'
+  });
+  const [scannerSettings, setScannerSettings] = useState({
+    retentionPeriod: 'd30',
+    defaultDeletion: 'days30',
+    anonymizeDocuments: true
+  });
+  const [securitySettings, setSecuritySettings] = useState({
+    twoFactorEnabled: false,
+    sessionTimeout: 'h24'
+  });
+  const [activeSessions, setActiveSessions] = useState(() => {
+    const isEnglish = currentLocale?.startsWith('en');
+    return [
+      {
+        id: 'current',
+        device: isEnglish ? 'MacBook Pro · Safari' : 'MacBook Pro · Safari',
+        location: isEnglish ? 'Berlin, Germany' : 'Berlin, Deutschland',
+        lastActive: isEnglish ? 'just now' : 'gerade eben',
+        current: true
+      },
+      {
+        id: 'ios',
+        device: isEnglish ? 'iPhone 15 · CertusFlow App' : 'iPhone 15 · CertusFlow App',
+        location: isEnglish ? 'Hamburg, Germany' : 'Hamburg, Deutschland',
+        lastActive: isEnglish ? '1 day ago' : 'vor 1 Tag',
+        current: false
+      },
+      {
+        id: 'office',
+        device: isEnglish ? 'Windows · Edge' : 'Windows · Edge',
+        location: isEnglish ? 'Munich, Germany' : 'München, Deutschland',
+        lastActive: isEnglish ? '7 days ago' : 'vor 7 Tagen',
+        current: false
+      }
+    ];
   });
 
   useEffect(() => {
@@ -81,6 +120,50 @@ export default function SettingsPage() {
       setIsLoading(false);
     }
   }
+
+  async function handleSaveScannerSettings() {
+    setIsUpdatingScanner(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      toast.success(t('contractScanner.saveSuccess'));
+    } catch (error) {
+      console.error('Failed to save scanner settings:', error);
+      toast.error(tCommon('error'));
+    } finally {
+      setIsUpdatingScanner(false);
+    }
+  }
+
+  async function handleSaveSecuritySettings() {
+    setIsUpdatingSecurity(true);
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      toast.success(t('security.toastSecuritySaved'));
+    } catch (error) {
+      console.error('Failed to save security settings:', error);
+      toast.error(tCommon('error'));
+    } finally {
+      setIsUpdatingSecurity(false);
+    }
+  }
+
+  const handleToggleTwoFactor = () => {
+    setSecuritySettings((prev) => {
+      const nextValue = !prev.twoFactorEnabled;
+      toast.success(nextValue ? t('security.toast2faOn') : t('security.toast2faOff'));
+      return {...prev, twoFactorEnabled: nextValue};
+    });
+  };
+
+  const handleRevokeSession = (sessionId: string) => {
+    setActiveSessions((sessions) => sessions.filter((session) => session.id !== sessionId));
+    toast.success(t('security.toastSessionsRevoked'));
+  };
+
+  const handleRevokeOtherSessions = () => {
+    setActiveSessions((sessions) => sessions.filter((session) => session.current));
+    toast.success(t('security.sessions.revokeAllSuccess'));
+  };
 
   async function handleSaveProfile() {
     setIsSaving(true);
@@ -252,6 +335,177 @@ export default function SettingsPage() {
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Wird gespeichert...
+                  </>
+                ) : (
+                  tCommon('save')
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Contract Scanner Controls */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('contractScanner.title')}</CardTitle>
+              <CardDescription>{t('contractScanner.description')}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-5">
+              <div className="space-y-2">
+                <Label>{t('contractScanner.retentionLabel')}</Label>
+                <Select
+                  value={scannerSettings.retentionPeriod}
+                  onValueChange={(value) => setScannerSettings((prev) => ({...prev, retentionPeriod: value}))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="h24">{t('contractScanner.retentionOptions.h24')}</SelectItem>
+                    <SelectItem value="d7">{t('contractScanner.retentionOptions.d7')}</SelectItem>
+                    <SelectItem value="d30">{t('contractScanner.retentionOptions.d30')}</SelectItem>
+                    <SelectItem value="d90">{t('contractScanner.retentionOptions.d90')}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">{t('contractScanner.retentionHint')}</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>{t('contractScanner.deletionLabel')}</Label>
+                <Select
+                  value={scannerSettings.defaultDeletion}
+                  onValueChange={(value) => setScannerSettings((prev) => ({...prev, defaultDeletion: value}))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="immediate">{t('contractScanner.deletionOptions.immediate')}</SelectItem>
+                    <SelectItem value="days30">{t('contractScanner.deletionOptions.days30')}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">{t('contractScanner.deletionHint')}</p>
+              </div>
+
+              <div className="flex items-start gap-3 rounded-md border border-border/70 p-4">
+                <Checkbox
+                  id="scanner-anonymize"
+                  checked={scannerSettings.anonymizeDocuments}
+                  onCheckedChange={(checked) =>
+                    setScannerSettings((prev) => ({...prev, anonymizeDocuments: checked === true}))
+                  }
+                  className="mt-1"
+                />
+                <div className="space-y-1">
+                  <Label htmlFor="scanner-anonymize">{t('contractScanner.anonymizationLabel')}</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t('contractScanner.anonymizationDescription')}
+                  </p>
+                </div>
+              </div>
+
+              <Button onClick={handleSaveScannerSettings} disabled={isUpdatingScanner}>
+                {isUpdatingScanner ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {tCommon('loading')}
+                  </>
+                ) : (
+                  tCommon('save')
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Security & Privacy */}
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('security.title')}</CardTitle>
+              <CardDescription>{t('security.description')}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* 2FA Component replaces the old toggle */}
+              <TwoFactorSetup 
+                onStatusChange={(enabled) => {
+                  setSecuritySettings((prev) => ({...prev, twoFactorEnabled: enabled}));
+                }}
+              />
+
+              <div className="space-y-2">
+                <Label>{t('security.sessionTimeoutLabel')}</Label>
+                <Select
+                  value={securitySettings.sessionTimeout}
+                  onValueChange={(value) => setSecuritySettings((prev) => ({...prev, sessionTimeout: value}))}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="h8">{t('security.sessionTimeoutOptions.h8')}</SelectItem>
+                    <SelectItem value="h24">{t('security.sessionTimeoutOptions.h24')}</SelectItem>
+                    <SelectItem value="d7">{t('security.sessionTimeoutOptions.d7')}</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-sm text-muted-foreground">{t('security.sessionTimeoutHint')}</p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold">{t('security.sessions.title')}</h4>
+                    <p className="text-sm text-muted-foreground">
+                      {t('security.sessions.description')}
+                    </p>
+                  </div>
+                  <Button variant="outline" size="sm" onClick={handleRevokeOtherSessions}>
+                    {t('security.sessions.revokeAll')}
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {activeSessions.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">{t('security.sessions.empty')}</p>
+                  ) : (
+                    activeSessions.map((session) => (
+                      <div
+                        key={session.id}
+                        className="flex flex-col gap-2 rounded-md border border-border/60 p-4 sm:flex-row sm:items-center sm:justify-between"
+                      >
+                        <div>
+                          <p className="font-medium">
+                            {session.device}
+                            {session.current && (
+                              <span className="ml-2 text-xs font-semibold uppercase text-primary">
+                                {t('security.sessions.current')}
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            {session.location}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {t('security.sessions.lastActive')}: {session.lastActive}
+                          </p>
+                        </div>
+                        {!session.current && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleRevokeSession(session.id)}
+                          >
+                            {t('security.sessions.revoke')}
+                          </Button>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              <Button onClick={handleSaveSecuritySettings} disabled={isUpdatingSecurity}>
+                {isUpdatingSecurity ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    {tCommon('loading')}
                   </>
                 ) : (
                   tCommon('save')

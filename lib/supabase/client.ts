@@ -1,14 +1,15 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-export const supabase = createSupabaseClient(supabaseUrl, supabaseAnonKey);
-
-// Export function to create client (browser)
+// Export function to create client (browser) with proper cookie handling
 export function createClient() {
-  return createSupabaseClient(supabaseUrl, supabaseAnonKey);
+  return createBrowserClient(supabaseUrl, supabaseAnonKey);
 }
+
+// Legacy export for backwards compatibility
+export const supabase = createClient();
 
 // Database Types
 export interface Profile {

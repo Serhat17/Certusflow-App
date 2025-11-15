@@ -64,6 +64,60 @@
       "paused": "Pausiert",
       "error": "Fehler",
       "draft": "Entwurf"
+    },
+    "createDialog": {
+      "title": "Automatisierung erstellen",
+      "description": "Wähle eine Vorlage oder beschreibe deiner KI-Assistentin, was automatisiert werden soll.",
+      "templates": {
+        "title": "Empfohlene Vorlagen",
+        "subtitle": "Alle Vorlagen werden DSGVO-konform innerhalb der EU verarbeitet und nutzen deine bestehenden Verbindungen.",
+        "categories": {
+          "finance": "Finanzen",
+          "operations": "Operationen",
+          "legal": "Verträge",
+          "communication": "Kommunikation"
+        },
+        "invoiceToSheet": {
+          "title": "Rechnungen automatisch in Tabellen speichern",
+          "description": "Scannt neue Gmail-Rechnungen, extrahiert Beträge und schreibt sie in Google Sheets.",
+          "gdpr": "Rechnungsdaten bleiben verschlüsselt in CertusFlow; keine Weitergabe an Dritte."
+        },
+        "contractAlerts": {
+          "title": "Vertragsfristen überwachen",
+          "description": "Überwacht Dropbox/Drive-Ordner und erstellt Erinnerungen, wenn Verträge auslaufen.",
+          "gdpr": "Nur Metadaten (Dateiname, Fälligkeitsdatum) werden verarbeitet."
+        },
+        "supportEscalation": {
+          "title": "Support-Eskalation",
+          "description": "Analysiert Slack oder E-Mail Tickets und markiert kritische Fälle automatisch.",
+          "gdpr": "Personenbezogene Inhalte bleiben in deinem Workspace und werden nicht gespeichert."
+        },
+        "dailyDigest": {
+          "title": "Tägliche KPI-Zusammenfassung",
+          "description": "Sammelt Kennzahlen aus verbundenen Tools und erstellt einen morgendlichen Report.",
+          "gdpr": "Nur aggregierte Kennzahlen werden versendet, keine Rohdaten."
+        }
+      },
+      "buttons": {
+        "useTemplate": "Vorlage verwenden",
+        "selected": "Vorlage ausgewählt",
+        "aiGenerate": "Mit KI erstellen",
+        "aiGenerating": "KI erstellt Workflow...",
+        "acceptSuggestion": "Workflow übernehmen"
+      },
+      "ai": {
+        "title": "Keine passende Vorlage?",
+        "subtitle": "Beschreibe in natürlicher Sprache, was passieren soll. Die KI nutzt ausschließlich deine freigegebenen Daten und Integrationen.",
+        "placeholder": "z. B. \"Wenn eine neue Dropbox-Datei im Ordner Verträge liegt, soll eine Aufgabe in Notion erstellt werden\"",
+        "helper": "Keine sensiblen Gesundheits- oder personenbezogenen Daten eingeben. Die Beschreibung wird verschlüsselt verarbeitet und danach gelöscht.",
+        "resultTitle": "Vorgeschlagener Workflow",
+        "confidence": "Vertrauen: {value}%",
+        "gdpr": "Die Eingabe wird nur zur Erstellung des Vorschlags genutzt und nicht gespeichert."
+      },
+      "toast": {
+        "templateReady": "Vorlage vorbereitet. Du kannst sie jetzt anpassen.",
+        "aiReady": "KI-Vorschlag erstellt. Bitte prüfe ihn vor der Aktivierung."
+      }
     }
   },
   "documents": {
@@ -121,6 +175,103 @@
       "timezone": "Zeitzone",
       "dateFormat": "Datumsformat",
       "currency": "Währung"
+    },
+    "contractScanner": {
+      "title": "Contract-Scanner",
+      "description": "Steuern Sie Speicherfristen, Löschoptionen und Anonymisierung für analysierte Verträge.",
+      "retentionLabel": "Speicherfrist für Analyseergebnisse",
+      "retentionHint": "Nach Ablauf werden Dateien automatisch gelöscht.",
+      "retentionOptions": {
+        "h24": "24 Stunden",
+        "d7": "7 Tage",
+        "d30": "30 Tage",
+        "d90": "90 Tage"
+      },
+      "deletionLabel": "Standard-Löschoption",
+      "deletionHint": "Diese Voreinstellung wird im Scanner angezeigt.",
+      "deletionOptions": {
+        "immediate": "Sofort nach Abschluss löschen",
+        "days30": "Nach 30 Tagen automatisch löschen"
+      },
+      "anonymizationLabel": "Automatische Anonymisierung aktivieren",
+      "anonymizationDescription": "Personenbezogene Daten werden unmittelbar nach der Analyse geschwärzt. Originaldateien bleiben unverändert.",
+      "saveSuccess": "Contract-Scanner-Einstellungen gespeichert"
+    },
+    "twoFactorSetup": {
+      "title": "Zwei-Faktor-Authentifizierung",
+      "description": "Schützen Sie Ihr Konto mit einem zusätzlichen Sicherheitscode aus Ihrer Authenticator-App.",
+      "statusEnabled": "2FA ist aktiviert",
+      "statusDisabled": "2FA ist deaktiviert",
+      "statusEnabledDesc": "Ihr Konto ist durch 2FA geschützt.",
+      "statusDisabledDesc": "Ihr Konto ist nicht durch 2FA geschützt.",
+      "enableButton": "2FA aktivieren",
+      "disableButton": "2FA deaktivieren",
+      "activeInfo": "Zwei-Faktor-Authentifizierung aktiv",
+      "activeInfoDesc": "Bei jeder Anmeldung wird ein Code aus Ihrer Authenticator-App benötigt.",
+      "scanQR": "QR-Code scannen",
+      "scanQRDesc": "Scannen Sie diesen Code mit Ihrer Authenticator-App.",
+      "scanInstructions": "Scannen Sie den QR-Code mit einer App wie Google Authenticator, Authy, 1Password oder einer anderen TOTP-kompatiblen App.",
+      "manualEntry": "Alternativ können Sie den Code manuell eingeben.",
+      "continue": "Weiter",
+      "verifyCode": "Code eingeben",
+      "verifyCodeDesc": "Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein, um 2FA zu aktivieren.",
+      "enterCode": "Geben Sie den aktuellen Code aus Ihrer App ein.",
+      "verifyButton": "Verifizieren",
+      "backupCodes": "Backup-Codes",
+      "backupCodesDesc": "Speichern Sie diese Codes sicher. Sie können sie verwenden, wenn Sie keinen Zugriff auf Ihre Authenticator-App haben.",
+      "copyButton": "Codes kopieren",
+      "downloadButton": "Herunterladen",
+      "copied": "Kopiert",
+      "warning": "Wichtig: Sicher aufbewahren!",
+      "warningDesc": "Jeder Code kann nur einmal verwendet werden. Bewahren Sie sie an einem sicheren Ort auf.",
+      "finish": "Fertig",
+      "disableTitle": "2FA deaktivieren",
+      "disableDesc": "Um 2FA zu deaktivieren, geben Sie einen Code aus Ihrer Authenticator-App ein.",
+      "disableWarning": "Achtung: Ihr Konto ist weniger sicher ohne 2FA.",
+      "enterCodeToDisable": "Geben Sie den aktuellen Code ein, um fortzufahren.",
+      "confirmDisable": "2FA deaktivieren",
+      "setupStarted": "2FA-Setup gestartet",
+      "setupFailed": "Setup fehlgeschlagen",
+      "enabled": "2FA erfolgreich aktiviert!",
+      "disabled": "2FA wurde deaktiviert",
+      "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
+      "verifyFailed": "Verifizierung fehlgeschlagen",
+      "disableFailed": "Deaktivierung fehlgeschlagen",
+      "codesCopied": "Backup-Codes in Zwischenablage kopiert",
+      "codesDownloaded": "Backup-Codes heruntergeladen"
+    },
+    "security": {
+      "title": "Security & Privacy",
+      "description": "Schützen Sie Ihr Konto und verwalten Sie aktive Sitzungen.",
+      "twoFactor": {
+        "title": "Zwei-Faktor-Authentifizierung",
+        "description": "Fügen Sie Ihrer Anmeldung eine zweite Sicherheitsstufe hinzu.",
+        "statusOn": "2FA ist aktiviert",
+        "statusOff": "2FA ist deaktiviert",
+        "enable": "2FA aktivieren",
+        "disable": "2FA deaktivieren"
+      },
+      "sessionTimeoutLabel": "Automatisches Abmelden",
+      "sessionTimeoutHint": "Nach dieser Zeit ohne Aktivität müssen sich Nutzer:innen erneut anmelden.",
+      "sessionTimeoutOptions": {
+        "h8": "8 Stunden",
+        "h24": "24 Stunden",
+        "d7": "7 Tage"
+      },
+      "sessions": {
+        "title": "Aktive Sitzungen",
+        "description": "Behalten Sie angemeldete Geräte im Blick und beenden Sie verdächtige Sessions.",
+        "current": "Aktive Sitzung",
+        "lastActive": "Zuletzt aktiv",
+        "revoke": "Sitzung beenden",
+        "revokeAll": "Alle anderen Sitzungen abmelden",
+        "revokeAllSuccess": "Andere Sitzungen wurden beendet",
+        "empty": "Keine weiteren Sitzungen gefunden."
+      },
+      "toast2faOn": "2FA wurde aktiviert",
+      "toast2faOff": "2FA wurde deaktiviert",
+      "toastSessionsRevoked": "Sitzung beendet",
+      "toastSecuritySaved": "Security-Einstellungen gespeichert"
     },
     "privacy": {
       "title": "Datenschutz & DSGVO",

@@ -64,6 +64,60 @@
       "paused": "Paused",
       "error": "Error",
       "draft": "Draft"
+    },
+    "createDialog": {
+      "title": "Create automation",
+      "description": "Pick a ready-to-use template or describe your idea to the AI assistant.",
+      "templates": {
+        "title": "Recommended templates",
+        "subtitle": "Every template runs inside the EU, respects your existing connections and stays GDPR compliant.",
+        "categories": {
+          "finance": "Finance",
+          "operations": "Operations",
+          "legal": "Legal",
+          "communication": "Communication"
+        },
+        "invoiceToSheet": {
+          "title": "Store invoices in spreadsheets automatically",
+          "description": "Scans new Gmail invoices, extracts totals and appends them to Google Sheets.",
+          "gdpr": "Invoice data stays encrypted inside CertusFlow."
+        },
+        "contractAlerts": {
+          "title": "Contract renewal alerts",
+          "description": "Monitors Dropbox/Drive folders and schedules reminders before contracts expire.",
+          "gdpr": "Only metadata (file name, due date) is processed."
+        },
+        "supportEscalation": {
+          "title": "Support escalation",
+          "description": "Analyzes Slack or email tickets and flags critical cases instantly.",
+          "gdpr": "Conversation content never leaves your workspace."
+        },
+        "dailyDigest": {
+          "title": "Daily KPI digest",
+          "description": "Collects key metrics from connected tools and sends a morning report.",
+          "gdpr": "Only aggregated numbers are shared, never raw data."
+        }
+      },
+      "buttons": {
+        "useTemplate": "Use template",
+        "selected": "Template selected",
+        "aiGenerate": "Create with AI",
+        "aiGenerating": "AI is drafting the workflow...",
+        "acceptSuggestion": "Apply workflow"
+      },
+      "ai": {
+        "title": "Need something else?",
+        "subtitle": "Describe your automation in plain language. The AI only uses the data and connections you've already approved.",
+        "placeholder": "e.g. \"When a new Dropbox file is added to Contracts, create a Notion task\"",
+        "helper": "Please avoid sensitive personal or health data. Your description is encrypted and deleted after processing.",
+        "resultTitle": "Suggested workflow",
+        "confidence": "Confidence: {value}%",
+        "gdpr": "The prompt is only processed to generate this suggestion and is not stored."
+      },
+      "toast": {
+        "templateReady": "Template prepared. You can customise it now.",
+        "aiReady": "AI suggestion created. Review it before activating."
+      }
     }
   },
   "documents": {
@@ -121,6 +175,103 @@
       "timezone": "Timezone",
       "dateFormat": "Date Format",
       "currency": "Currency"
+    },
+    "contractScanner": {
+      "title": "Contract Scanner",
+      "description": "Control retention, default deletion and anonymization for analyzed contracts.",
+      "retentionLabel": "Retention period for analysis results",
+      "retentionHint": "Documents are deleted automatically after this period.",
+      "retentionOptions": {
+        "h24": "24 hours",
+        "d7": "7 days",
+        "d30": "30 days",
+        "d90": "90 days"
+      },
+      "deletionLabel": "Default deletion option",
+      "deletionHint": "This preset is shown inside the scanner.",
+      "deletionOptions": {
+        "immediate": "Delete immediately after analysis",
+        "days30": "Delete automatically after 30 days"
+      },
+      "anonymizationLabel": "Enable automatic anonymization",
+      "anonymizationDescription": "Personal data is redacted right after the analysis while originals stay untouched.",
+      "saveSuccess": "Contract scanner settings saved"
+    },
+    "twoFactorSetup": {
+      "title": "Two-Factor Authentication",
+      "description": "Protect your account with an additional security code from your authenticator app.",
+      "statusEnabled": "2FA is enabled",
+      "statusDisabled": "2FA is disabled",
+      "statusEnabledDesc": "Your account is protected by 2FA.",
+      "statusDisabledDesc": "Your account is not protected by 2FA.",
+      "enableButton": "Enable 2FA",
+      "disableButton": "Disable 2FA",
+      "activeInfo": "Two-factor authentication active",
+      "activeInfoDesc": "A code from your authenticator app is required for every sign-in.",
+      "scanQR": "Scan QR code",
+      "scanQRDesc": "Scan this code with your authenticator app.",
+      "scanInstructions": "Scan the QR code with an app like Google Authenticator, Authy, 1Password, or any other TOTP-compatible app.",
+      "manualEntry": "Alternatively, you can enter the code manually.",
+      "continue": "Continue",
+      "verifyCode": "Enter code",
+      "verifyCodeDesc": "Enter the 6-digit code from your authenticator app to enable 2FA.",
+      "enterCode": "Enter the current code from your app.",
+      "verifyButton": "Verify",
+      "backupCodes": "Backup codes",
+      "backupCodesDesc": "Save these codes securely. You can use them if you don't have access to your authenticator app.",
+      "copyButton": "Copy codes",
+      "downloadButton": "Download",
+      "copied": "Copied",
+      "warning": "Important: Keep safe!",
+      "warningDesc": "Each code can only be used once. Store them in a secure location.",
+      "finish": "Finish",
+      "disableTitle": "Disable 2FA",
+      "disableDesc": "To disable 2FA, enter a code from your authenticator app.",
+      "disableWarning": "Warning: Your account will be less secure without 2FA.",
+      "enterCodeToDisable": "Enter the current code to continue.",
+      "confirmDisable": "Disable 2FA",
+      "setupStarted": "2FA setup started",
+      "setupFailed": "Setup failed",
+      "enabled": "2FA successfully enabled!",
+      "disabled": "2FA has been disabled",
+      "invalidCode": "Invalid code. Please try again.",
+      "verifyFailed": "Verification failed",
+      "disableFailed": "Disable failed",
+      "codesCopied": "Backup codes copied to clipboard",
+      "codesDownloaded": "Backup codes downloaded"
+    },
+    "security": {
+      "title": "Security & Privacy",
+      "description": "Protect your account and manage active sessions.",
+      "twoFactor": {
+        "title": "Two-factor authentication",
+        "description": "Add a second factor to every sign-in.",
+        "statusOn": "2FA is enabled",
+        "statusOff": "2FA is disabled",
+        "enable": "Enable 2FA",
+        "disable": "Disable 2FA"
+      },
+      "sessionTimeoutLabel": "Automatic sign-out",
+      "sessionTimeoutHint": "Users need to re-authenticate after this idle time.",
+      "sessionTimeoutOptions": {
+        "h8": "8 hours",
+        "h24": "24 hours",
+        "d7": "7 days"
+      },
+      "sessions": {
+        "title": "Active sessions",
+        "description": "Keep an eye on signed-in devices and end suspicious ones.",
+        "current": "Current session",
+        "lastActive": "Last active",
+        "revoke": "End session",
+        "revokeAll": "Sign out other sessions",
+        "revokeAllSuccess": "Other sessions have been signed out",
+        "empty": "No additional sessions detected."
+      },
+      "toast2faOn": "2FA has been enabled",
+      "toast2faOff": "2FA has been disabled",
+      "toastSessionsRevoked": "Session ended",
+      "toastSecuritySaved": "Security settings saved"
     },
     "privacy": {
       "title": "Privacy & GDPR",

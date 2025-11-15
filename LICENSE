@@ -1,0 +1,232 @@
+PROPRIETARY SOFTWARE LICENSE AGREEMENT
+
+Copyright (c) 2025 Serhat17. All Rights Reserved.
+
+CertusFlow - Smart Business Automation Platform
+
+================================================================================
+IMPORTANT - READ CAREFULLY
+================================================================================
+
+This software and associated documentation files (the "Software") are proprietary
+and confidential. This license grants LIMITED rights to view and study the source
+code for evaluation purposes ONLY.
+
+================================================================================
+1. DEFINITIONS
+================================================================================
+
+"Software" means the CertusFlow application, including all source code, object code,
+documentation, databases, user interfaces, and any updates or modifications.
+
+"You" or "Licensee" means the individual or entity accessing this Software.
+
+"Commercial Use" means any use of the Software for profit, business operations,
+or revenue generation.
+
+================================================================================
+2. GRANT OF LICENSE
+================================================================================
+
+Subject to the terms of this Agreement, You are granted a LIMITED, NON-EXCLUSIVE,
+NON-TRANSFERABLE, REVOCABLE license to:
+
+  a) View and study the source code for personal educational purposes only
+  b) Run the Software for personal, non-commercial evaluation purposes only
+
+================================================================================
+3. RESTRICTIONS - YOU MAY NOT
+================================================================================
+
+You are explicitly PROHIBITED from:
+
+  ✗ Copying, reproducing, or duplicating any part of the Software
+  ✗ Modifying, adapting, translating, or creating derivative works
+  ✗ Distributing, sublicensing, selling, or transferring the Software
+  ✗ Using the Software for any commercial purpose whatsoever
+  ✗ Reverse engineering, decompiling, or disassembling the Software
+  ✗ Removing or altering any copyright, trademark, or proprietary notices
+  ✗ Using the Software to create competing products or services
+  ✗ Publicly displaying, performing, or broadcasting the Software
+  ✗ Renting, leasing, or lending the Software to third parties
+  ✗ Using the Software in any service bureau or time-sharing arrangement
+  ✗ Extracting or reusing any algorithms, methods, or business logic
+  ✗ Using the Software in violation of any applicable laws or regulations
+
+================================================================================
+4. INTELLECTUAL PROPERTY RIGHTS
+================================================================================
+
+The Software is licensed, NOT sold. Serhat17 retains all right, title, and
+interest in and to the Software, including all intellectual property rights.
+
+This includes but is not limited to:
+  • Source code and object code
+  • User interface designs and layouts
+  • Database schemas and structures
+  • Algorithms and business logic
+  • API designs and integrations
+  • Documentation and tutorials
+  • Trademarks, logos, and branding
+
+================================================================================
+5. NO COMMERCIAL USE
+================================================================================
+
+COMMERCIAL USE OF THIS SOFTWARE IS STRICTLY PROHIBITED without a separate
+written commercial license agreement from Serhat17.
+
+Commercial use includes but is not limited to:
+  • Operating the Software as a service (SaaS)
+  • Selling access to the Software
+  • Using the Software in a business environment
+  • Generating revenue directly or indirectly from the Software
+  • White-labeling or rebranding the Software
+  • Incorporating the Software into commercial products
+
+================================================================================
+6. NO RESALE OR REDISTRIBUTION
+================================================================================
+
+You may NOT:
+  • Sell, resell, or offer the Software for sale
+  • Distribute copies of the Software in any form
+  • Make the Software available for download
+  • Share the Software via any medium (cloud storage, file sharing, etc.)
+  • Provide access to the Software to third parties
+  • Bundle the Software with other products or services
+
+================================================================================
+7. CONFIDENTIALITY
+================================================================================
+
+The Software contains trade secrets and confidential information. You agree to:
+  • Maintain the confidentiality of the Software
+  • Not disclose any portion of the Software to third parties
+  • Use the same degree of care to protect the Software as you would
+    use to protect your own confidential information
+
+================================================================================
+8. NO WARRANTY
+================================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+
+Serhat17 does not warrant that:
+  • The Software will meet your requirements
+  • The operation of the Software will be uninterrupted or error-free
+  • Defects in the Software will be corrected
+  • The Software is free from viruses or other harmful components
+
+================================================================================
+9. LIMITATION OF LIABILITY
+================================================================================
+
+IN NO EVENT SHALL Serhat17 BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+TOTAL LIABILITY SHALL NOT EXCEED €100 (ONE HUNDRED EUROS).
+
+================================================================================
+10. TERMINATION
+================================================================================
+
+This license is effective until terminated. Your rights under this license
+will terminate AUTOMATICALLY without notice if you fail to comply with any
+term of this Agreement.
+
+Upon termination, you must:
+  • Immediately cease all use of the Software
+  • Destroy all copies of the Software in your possession
+  • Certify in writing that all copies have been destroyed
+
+Serhat17 may also terminate this license at any time for any reason.
+
+================================================================================
+11. ENFORCEMENT AND REMEDIES
+================================================================================
+
+Any unauthorized use of the Software will result in:
+  • Immediate termination of this license
+  • Legal action for copyright infringement
+  • Pursuit of maximum damages available under law
+  • Injunctive relief to prevent further violations
+  • Recovery of attorney's fees and costs
+
+================================================================================
+12. COMMERCIAL LICENSING
+================================================================================
+
+For commercial use, enterprise deployments, or white-label solutions,
+contact: [Your Contact Email]
+
+Commercial licenses are available with:
+  • Full commercial usage rights
+  • Technical support and maintenance
+  • Custom integrations and features
+  • Service level agreements (SLAs)
+
+================================================================================
+13. GOVERNING LAW
+================================================================================
+
+This Agreement shall be governed by and construed in accordance with the
+laws of Germany, without regard to its conflict of law provisions.
+
+Any disputes arising under this Agreement shall be subject to the exclusive
+jurisdiction of the courts of Germany.
+
+================================================================================
+14. ENTIRE AGREEMENT
+================================================================================
+
+This Agreement constitutes the entire agreement between you and Serhat17
+concerning the Software and supersedes all prior agreements, whether written
+or oral.
+
+No amendment, modification, or waiver of this Agreement shall be valid unless
+in writing and signed by Serhat17.
+
+================================================================================
+15. SEVERABILITY
+================================================================================
+
+If any provision of this Agreement is held to be invalid or unenforceable,
+the remaining provisions shall continue in full force and effect.
+
+================================================================================
+16. NO WAIVER
+================================================================================
+
+The failure of Serhat17 to enforce any right or provision of this Agreement
+shall not constitute a waiver of such right or provision.
+
+================================================================================
+17. CONTACT INFORMATION
+================================================================================
+
+For licensing inquiries, permissions, or questions:
+
+  Owner: Serhat17
+  Project: CertusFlow
+  Repository: https://github.com/Serhat17/Certusflow-App
+
+================================================================================
+
+BY ACCESSING, VIEWING, OR USING THIS SOFTWARE, YOU ACKNOWLEDGE THAT YOU HAVE
+READ THIS AGREEMENT, UNDERSTAND IT, AND AGREE TO BE BOUND BY ITS TERMS AND
+CONDITIONS.
+
+IF YOU DO NOT AGREE TO THESE TERMS, YOU MUST IMMEDIATELY DELETE ALL COPIES
+OF THE SOFTWARE AND CEASE ALL ACCESS TO THE REPOSITORY.
+
+================================================================================
+END OF LICENSE AGREEMENT
+================================================================================
